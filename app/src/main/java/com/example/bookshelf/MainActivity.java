@@ -47,6 +47,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         searchEditText = findViewById(R.id.searchEditText);
 
+        /*
+        Perform a search
+         */
         findViewById(R.id.searchButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -54,6 +57,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             }
         });
 
+        /*
+        If we previously saved a book search and/or selected a book, then use that
+        information to set up the necessary instance variables
+         */
         if (savedInstanceState != null) {
             books = savedInstanceState.getParcelableArrayList(BOOKS_KEY);
             selectedBook = savedInstanceState.getParcelable(SELECTED_BOOK_KEY);
@@ -63,8 +70,14 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         twoPane = findViewById(R.id.container2) != null;
         fm = getSupportFragmentManager();
+
         requestQueue = Volley.newRequestQueue(this);
 
+        /*
+        Get an instance of BookListFragment with an empty list of books
+        if we didn't previously do a search, or use the previous list of
+        books if we had previously performed a search
+         */
         bookListFragment = BookListFragment.newInstance(books);
 
         fm.beginTransaction()
@@ -73,7 +86,12 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
         /*
         If we have two containers available, load a single instance
-        of BookDetailsFragment to display all selected books
+        of BookDetailsFragment to display all selected books.
+
+        If a book was previously selected, show that book in the book details fragment
+        *NOTE* we could have simplified this to a single line by having the
+        fragment's newInstance() method ignore a null reference, but this way allow
+        us to limit the amount of things we have to change in the Fragment's implementation.
          */
         if (twoPane) {
             if (selectedBook != null)
@@ -99,6 +117,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     Fetch a set of "books" from from the web service API
      */
     private void fetchBooks(String searchString) {
+        /*
+        A Volloy JSONArrayRequest will automatically convert a JSON Array response from
+        a web server to an Android JSONArray object
+         */
         JsonArrayRequest jsonArrayRequest = new JsonArrayRequest(SEARCH_API + searchString, new Response.Listener<JSONArray>() {
             @Override
             public void onResponse(JSONArray response) {
@@ -131,6 +153,10 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     };
 
     private void updateBooksDisplay() {
+        /*
+        Remove the BookDetailsFragment from the container after a search
+        if it is the currently attached fragment
+         */
         if (fm.findFragmentById(R.id.container1) instanceof BookDetailsFragment)
             fm.popBackStack();
         bookListFragment.updateBooksDisplay(books);
@@ -159,6 +185,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
+
+        // Save previously searched books as well as selected book
         outState.putParcelableArrayList(BOOKS_KEY, books);
         outState.putParcelable(SELECTED_BOOK_KEY, selectedBook);
     }

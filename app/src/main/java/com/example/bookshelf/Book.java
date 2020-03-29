@@ -3,13 +3,16 @@ package com.example.bookshelf;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+/*
+Book class to represent a book. Implements the Parcelable interface
+so that a book can be saved inside a bundle object
+ */
 public class Book implements Parcelable {
 
     public final static String JSON_ID = "book_id";
     public final static String JSON_TITLE = "title";
     public final static String JSON_AUTHOR = "author";
     public final static String JSON_COVER_URL = "cover_url";
-
 
     private int id;
     private String title, author, coverUrl;

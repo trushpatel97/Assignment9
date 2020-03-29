@@ -73,6 +73,8 @@ public class BookDetailsFragment extends Fragment {
     public void displayBook(Book book) {
         titleTextView.setText(book.getTitle());
         authorTextView.setText(book.getAuthor());
+        // Picasso simplifies image loading from the web.
+        // No need to download separately.
         Picasso.get().load(book.getCoverUrl()).into(coverImageView);
     }
 }
