@@ -21,7 +21,7 @@ public class BookListFragment extends Fragment {
     private static final String BOOK_LIST_KEY = "booklist";
     private ArrayList<Book> books;
     private ListView listView;
-
+    ArrayList<String> titles = new ArrayList<>();
     private BookSelectedInterface parentActivity;
 
     public BookListFragment() {}
@@ -54,6 +54,11 @@ public class BookListFragment extends Fragment {
             throw new RuntimeException("Please implement the required interface(s)");
         }
     }
+    @Override
+    public void onDetach(){
+        super.onDetach();
+        parentActivity=null;
+    }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,13 @@ public class BookListFragment extends Fragment {
         books = new ArrayList<Book>();
         if (getArguments() != null) {
             books.addAll((ArrayList) getArguments().getParcelableArrayList(BOOK_LIST_KEY));
+        }
+        if(books==null){
+
+        }else{
+            for(int i=0; i<books.size(); i++){
+                titles.add(books.get(i).getTitle());//getting titles of books
+            }
         }
     }
 
@@ -91,6 +103,10 @@ public class BookListFragment extends Fragment {
     Interface for communicating with attached activity
      */
     interface BookSelectedInterface {
-        void bookSelected(int index);
+        void bookSelected(int Book);
     }
+    public ArrayList<Book> getBooks(){//function to get the books
+        return this.books;//returning these books
+    }
+
 }
