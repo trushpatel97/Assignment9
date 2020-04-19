@@ -103,9 +103,10 @@ public class BookListFragment extends Fragment {
     Interface for communicating with attached activity
      */
     interface BookSelectedInterface {
-        void bookSelected(int index);
+        void bookSelected(int Book);
     }
     public ArrayList<Book> getBooks(){//function to get the books
         return this.books;//returning these books
     }
+
 }
