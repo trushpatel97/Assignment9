@@ -3,6 +3,9 @@ package com.example.bookshelf;
 import android.os.Parcel;
 import android.os.Parcelable;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 /*
 Book class to represent a book. Implements the Parcelable interface
 so that a book can be saved inside a bundle object
@@ -16,21 +19,27 @@ public class Book implements Parcelable {
 
     private int id,duration;
     private String title, author, coverUrl;//added duration
-    public Book(int id, String title, String author, String coverUrl){//int duration) {
+    public Book(int id, String title, String author, String coverUrl, int duration){//int duration) {
         this.id = id;
-        this.duration = duration;//added duration
         this.title = title;
         this.author = author;
         this.coverUrl = coverUrl;
-
+        this.duration = this.duration;//added duration
+    }
+    public Book (JSONObject type)throws JSONException{//adding json objects for the fields
+        this(type.getInt("book_id"),
+                type.getString("title"),
+                type.getString("author"),
+                type.getString("cover_url"),
+                type.getInt("duration"));
     }
 
     protected Book(Parcel in) {
         id = in.readInt();
-        duration = in.readInt();//added duration
         title = in.readString();
         author = in.readString();
         coverUrl = in.readString();
+        duration = in.readInt();//added duration
 
     }
 
@@ -86,13 +95,13 @@ public class Book implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
-        //dest.writeInt(duration);//adding the one for duration
         dest.writeString(title);
         dest.writeString(author);
         dest.writeString(coverUrl);
+        dest.writeInt(duration);//adding the one for duration
     }
 
     public int getDuration() { return duration; }//getter for duration
 
-   public void setDuration(int duration) { this.duration = duration; }//setter for duration
+    public void setDuration(int duration) { this.duration = duration; }//setter for duration
 }

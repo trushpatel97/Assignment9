@@ -2,8 +2,12 @@ package com.example.bookshelf;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
+import androidx.annotation.Nullable;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.fragment.app.Fragment;
 
+import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,13 +17,14 @@ import android.widget.TextView;
 import com.squareup.picasso.Picasso;
 
 import java.util.HashMap;
+import java.util.Objects;
 
 
 public class BookDetailsFragment extends Fragment {
 
     private static final String BOOK_KEY = "book";
     private Book book;
-
+    ConstraintLayout bookDetailsLayout;//added layout for the fragment
     TextView titleTextView, authorTextView;
     ImageView coverImageView;
 
@@ -65,14 +70,26 @@ public class BookDetailsFragment extends Fragment {
             displayBook(book);
         return v;
     }
-
+    @Override
+    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){//since app crashes sometimes in onCreateView, ive made it nullable so we always findViewByID WHEN IT IS FULLY CREATED (THE VIEW)
+        super.onViewCreated(view, savedInstanceState);
+        coverImageView = Objects.requireNonNull(getView()).findViewById(R.id.coverImageView);
+        titleTextView = Objects.requireNonNull(getView()).findViewById(R.id.titleTextView);
+        authorTextView = getView().findViewById(R.id.authorTextView);
+        if (book != null) {
+            displayBook(book);
+        }
+    }
     /*
     This method is used both internally and externally (from the activity)
     to display a book
      */
-    public void displayBook(Book book) {
+    public void displayBook(Book book) {//Adding the setText for author and title
         titleTextView.setText(book.getTitle());
+        titleTextView.setGravity(Gravity.CENTER);
+
         authorTextView.setText(book.getAuthor());
+        authorTextView.setGravity(Gravity.CENTER);
         // Picasso simplifies image loading from the web.
         // No need to download separately.
         Picasso.get().load(book.getCoverUrl()).into(coverImageView);
