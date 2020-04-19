@@ -14,21 +14,24 @@ public class Book implements Parcelable {
     public final static String JSON_AUTHOR = "author";
     public final static String JSON_COVER_URL = "cover_url";
 
-    private int id;
-    private String title, author, coverUrl;
-
-    public Book(int id, String title, String author, String coverUrl) {
+    private int id,duration;
+    private String title, author, coverUrl;//added duration
+    public Book(int id, String title, String author, String coverUrl,int duration) {
         this.id = id;
+        this.duration = duration;//added duration
         this.title = title;
         this.author = author;
         this.coverUrl = coverUrl;
+
     }
 
     protected Book(Parcel in) {
         id = in.readInt();
+        duration = in.readInt();//added duration
         title = in.readString();
         author = in.readString();
         coverUrl = in.readString();
+
     }
 
     public static final Creator<Book> CREATOR = new Creator<Book>() {
@@ -83,8 +86,13 @@ public class Book implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
+        dest.writeInt(duration);//adding the one for duration
         dest.writeString(title);
         dest.writeString(author);
         dest.writeString(coverUrl);
     }
+
+    public int getDuration() { return duration; }//getter for duration
+
+    public void setDuration(int duration) { this.duration = duration; }//setter for duration
 }
