@@ -16,7 +16,7 @@ public class Book implements Parcelable {
 
     private int id,duration;
     private String title, author, coverUrl;//added duration
-    public Book(int id, String title, String author, String coverUrl,int duration) {
+    public Book(int id, String title, String author, String coverUrl){//int duration) {
         this.id = id;
         this.duration = duration;//added duration
         this.title = title;
@@ -86,7 +86,7 @@ public class Book implements Parcelable {
     @Override
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeInt(id);
-        dest.writeInt(duration);//adding the one for duration
+        //dest.writeInt(duration);//adding the one for duration
         dest.writeString(title);
         dest.writeString(author);
         dest.writeString(coverUrl);
@@ -94,5 +94,5 @@ public class Book implements Parcelable {
 
     public int getDuration() { return duration; }//getter for duration
 
-    public void setDuration(int duration) { this.duration = duration; }//setter for duration
+   public void setDuration(int duration) { this.duration = duration; }//setter for duration
 }
