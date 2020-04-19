@@ -27,7 +27,7 @@ public class BookDetailsFragment extends Fragment {
     ConstraintLayout bookDetailsLayout;//added layout for the fragment
     TextView titleTextView, authorTextView;
     ImageView coverImageView;
-
+    PlayInterface parentActivity;
     public BookDetailsFragment() {}
 
     public static BookDetailsFragment newInstance(Book book) {
@@ -60,7 +60,16 @@ public class BookDetailsFragment extends Fragment {
         titleTextView = v.findViewById(R.id.titleTextView);
         authorTextView = v.findViewById(R.id.authorTextView);
         coverImageView = v.findViewById(R.id.coverImageView);
-
+        v.findViewById(R.id.Play).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(book==null){
+                    return;
+                }
+                parentActivity.setDetailFrag(this);
+                parentActivity.bookPlay(book.getId());
+            }
+        });
         /*
         Because this fragment can be created with or without
         a book to display when attached, we need to make sure
@@ -80,11 +89,22 @@ public class BookDetailsFragment extends Fragment {
             displayBook(book);
         }
     }
+    public int getIdOfBook(){
+        if(book!=null){
+            return book.getId();//get books id
+        }else{
+            return 0;//no book
+        }
+    }
+    public boolean UserInterfaceReady(){
+        return (coverImageView!=null);//returns true or false whether we got a coverImage or not
+    }
     /*
     This method is used both internally and externally (from the activity)
     to display a book
      */
     public void displayBook(Book book) {//Adding the setText for author and title
+        this.book = book;
         titleTextView.setText(book.getTitle());
         titleTextView.setGravity(Gravity.CENTER);
 
@@ -93,5 +113,9 @@ public class BookDetailsFragment extends Fragment {
         // Picasso simplifies image loading from the web.
         // No need to download separately.
         Picasso.get().load(book.getCoverUrl()).into(coverImageView);
+    }
+    interface PlayInterface{
+        void bookPlay(int id);
+        void setDetailFrag(View.OnClickListener bookDetailsFrag);
     }
 }
