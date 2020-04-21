@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -75,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         setContentView(R.layout.activity_main);
         searchEditText = findViewById(R.id.searchEditText);
         intent = new Intent(MainActivity.this, AudiobookService.class);//Starting intent to run the audiobookserivce class
+        bindService(intent,myConnection, Context.BIND_AUTO_CREATE);
         SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
