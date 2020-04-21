@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         setContentView(R.layout.activity_main);
         searchEditText = findViewById(R.id.searchEditText);
         intent = new Intent(MainActivity.this, AudiobookService.class);//Starting intent to run the audiobookserivce class
-        SeekBar seekBar = findViewById(R.id.seekBar);
+        SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -101,24 +101,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                 fetchBooks(searchEditText.getText().toString());
             }
         });
-        /*
-        Perform a stop
-         */
-        findViewById(R.id.stopButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                stop_pressed();
-            }
-        });
-        /*
-        Perform a pause
-         */
-        findViewById(R.id.pauseButton).setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pause_pressed();
-            }
-        });
+
         /*
         If we previously saved a book search and/or selected a book, then use that
         information to set up the necessary instance variables
@@ -173,6 +156,24 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                         .commit();
             }
         }
+        /*
+        Perform a stop
+         */
+        findViewById(R.id.stopButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stop_pressed();
+            }
+        });
+        /*
+        Perform a pause
+         */
+        findViewById(R.id.pauseButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pause_pressed();
+            }
+        });
     }
 
     /*
@@ -258,9 +259,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     }
 
     public void play_pressed(Book book) {
-        if(!connected){
+        if(connected){
 
-        }else{
             int booksID = book.getId();
             audioService.play(booksID);//play THIS book's ID
             startService(intent);
@@ -268,9 +268,8 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     }
 
     public void stop_pressed(){
-        if(!connected){
+        if(connected){
 
-        }else{
             audioService.stop();
             stopService(intent);
         }

@@ -1,5 +1,6 @@
 package com.example.bookshelf;
 
+import android.content.Context;
 import android.os.Bundle;
 
 import androidx.annotation.NonNull;
@@ -52,6 +53,16 @@ public class BookDetailsFragment extends Fragment {
             book = (Book) getArguments().getParcelable(BOOK_KEY);
         }
     }
+    @Override
+    public  void onAttach(Context c){
+        super.onAttach(c);
+        if(c instanceof BookInterface){
+            parentActivity = (BookInterface) c;
+        }else{
+            throw new RuntimeException("Implement the interface");
+        }
+    }
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -76,16 +87,6 @@ public class BookDetailsFragment extends Fragment {
             displayBook(book);
         return v;
     }
-    @Override
-    public void onViewCreated(@NonNull View view, @Nullable Bundle savedInstanceState){//since app crashes sometimes in onCreateView, ive made it nullable so we always findViewByID WHEN IT IS FULLY CREATED (THE VIEW)
-        super.onViewCreated(view, savedInstanceState);
-        coverImageView = Objects.requireNonNull(getView()).findViewById(R.id.coverImageView);
-        titleTextView = Objects.requireNonNull(getView()).findViewById(R.id.titleTextView);
-        authorTextView = getView().findViewById(R.id.authorTextView);
-        if (book != null) {
-            displayBook(book);
-        }
-    }
     public int getIdOfBook(){
         if(book!=null){
             return book.getId();//get books id
@@ -93,9 +94,7 @@ public class BookDetailsFragment extends Fragment {
             return 0;//no book
         }
     }
-    public boolean UserInterfaceReady(){
-        return (coverImageView!=null);//returns true or false whether we got a coverImage or not
-    }
+
     /*
     This method is used both internally and externally (from the activity)
     to display a book
