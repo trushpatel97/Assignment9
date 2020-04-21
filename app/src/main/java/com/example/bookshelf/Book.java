@@ -16,6 +16,7 @@ public class Book implements Parcelable {
     public final static String JSON_TITLE = "title";
     public final static String JSON_AUTHOR = "author";
     public final static String JSON_COVER_URL = "cover_url";
+    public static final String JSON_DURATION = "duration";
 
     private int id,duration;
     private String title, author, coverUrl;//added duration
@@ -24,14 +25,7 @@ public class Book implements Parcelable {
         this.title = title;
         this.author = author;
         this.coverUrl = coverUrl;
-        this.duration = this.duration;//added duration
-    }
-    public Book (JSONObject type)throws JSONException{//adding json objects for the fields
-        this(type.getInt("book_id"),
-                type.getString("title"),
-                type.getString("author"),
-                type.getString("cover_url"),
-                type.getInt("duration"));
+        this.duration = duration;//added duration
     }
 
     protected Book(Parcel in) {

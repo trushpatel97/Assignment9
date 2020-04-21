@@ -69,10 +69,6 @@ public class BookListFragment extends Fragment {
         }
         if(books==null){
 
-        }else{
-            for(int i=0; i<books.size(); i++){
-                titles.add(books.get(i).getTitle());//getting titles of books
-            }
         }
     }
 
@@ -105,8 +101,6 @@ public class BookListFragment extends Fragment {
     interface BookSelectedInterface {
         void bookSelected(int Book);
     }
-    public ArrayList<Book> getBooks(){//function to get the books
-        return this.books;//returning these books
-    }
+
 
 }

@@ -23,11 +23,12 @@ import java.util.Objects;
 public class BookDetailsFragment extends Fragment {
 
     private static final String BOOK_KEY = "book";
+    private final String DOWNLOAD_URL = "https://kamorris.com/lab/audlib/download.php?id=";
     private Book book;
-    ConstraintLayout bookDetailsLayout;//added layout for the fragment
+    //ConstraintLayout bookDetailsLayout;//added layout for the fragment
     TextView titleTextView, authorTextView;
     ImageView coverImageView;
-    PlayInterface parentActivity;
+    private BookInterface parentActivity;
     public BookDetailsFragment() {}
 
     public static BookDetailsFragment newInstance(Book book) {
@@ -63,11 +64,7 @@ public class BookDetailsFragment extends Fragment {
         v.findViewById(R.id.Play).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(book==null){
-                    return;
-                }
-                parentActivity.setDetailFrag(this);
-                parentActivity.bookPlay(book.getId());
+                parentActivity.playClicked(book);
             }
         });
         /*
@@ -114,8 +111,7 @@ public class BookDetailsFragment extends Fragment {
         // No need to download separately.
         Picasso.get().load(book.getCoverUrl()).into(coverImageView);
     }
-    interface PlayInterface{
-        void bookPlay(int id);
-        void setDetailFrag(View.OnClickListener bookDetailsFrag);
+    interface BookInterface{
+        void playClicked(Book book);
     }
 }
