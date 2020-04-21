@@ -61,10 +61,10 @@ public class BookDetailsFragment extends Fragment {
         titleTextView = v.findViewById(R.id.titleTextView);
         authorTextView = v.findViewById(R.id.authorTextView);
         coverImageView = v.findViewById(R.id.coverImageView);
-        v.findViewById(R.id.Play).setOnClickListener(new View.OnClickListener() {
+        v.findViewById(R.id.playButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                parentActivity.playClicked(book);
+                parentActivity.play_pressed(book);
             }
         });
         /*
@@ -112,6 +112,6 @@ public class BookDetailsFragment extends Fragment {
         Picasso.get().load(book.getCoverUrl()).into(coverImageView);
     }
     interface BookInterface{
-        void playClicked(Book book);
+        void play_pressed(Book book);
     }
 }

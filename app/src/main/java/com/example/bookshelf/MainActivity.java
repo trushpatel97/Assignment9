@@ -31,7 +31,7 @@ import java.util.HashMap;
 
 import edu.temple.audiobookplayer.AudiobookService;
 
-public class MainActivity extends AppCompatActivity implements BookListFragment.BookSelectedInterface,BookDetailsFragment.PlayInterface {
+public class MainActivity extends AppCompatActivity implements BookListFragment.BookSelectedInterface,BookDetailsFragment.BookInterface {
 
     private static final String BOOKS_KEY = "books";
     private static final String SELECTED_BOOK_KEY = "selectedBook";
@@ -42,7 +42,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     boolean twoPane;
     BookListFragment bookListFragment;
     BookDetailsFragment bookDetailsFragment;
-    SeekBar seekBar = null;//for seek bar
+    SeekBar seekBar;//for seek bar
     AudiobookService.MediaControlBinder audioService;//for audio
     boolean connected;//seeing if we connected to api
     Intent intent;
@@ -67,16 +67,31 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         @Override
         public void onServiceDisconnected(ComponentName name) {
             connected = false;
-            audioService = null;
         }
     };
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        seekBar = findViewById(R.id.seekBar);
         searchEditText = findViewById(R.id.searchEditText);
         intent = new Intent(MainActivity.this, AudiobookService.class);//Starting intent to run the audiobookserivce class
+        SeekBar seekBar = findViewById(R.id.seekBar);
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                audioService.seekTo(progress);//this changes seekbar progress
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         /*
         Perform a search
          */
@@ -104,22 +119,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                 pause_pressed();
             }
         });
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
-                audioService.seekTo(progress);//this changes seekbar progress
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
         /*
         If we previously saved a book search and/or selected a book, then use that
         information to set up the necessary instance variables
@@ -127,6 +126,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         if (savedInstanceState != null) {
             books = savedInstanceState.getParcelableArrayList(BOOKS_KEY);
             selectedBook = savedInstanceState.getParcelable(SELECTED_BOOK_KEY);
+            audioService.play(selectedBook.getId());
         }
         else
             books = new ArrayList<Book>();
@@ -144,8 +144,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         bookListFragment = BookListFragment.newInstance(books);
 
         fm.beginTransaction()
-                .replace(R.id.container1, bookListFragment)
-        .commit();
+                .replace(R.id.container1, bookListFragment).commit();
 
         /*
         If we have two containers available, load a single instance
@@ -176,22 +175,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         }
     }
 
-    private void BookPlay_pause() {
-    }
-
-    public void BookPlay_stop(){
-        if(playing){
-            playing = false;
-            //if(connected)
-            binderService.stop();
-            seekBar.setProgress(0);
-
-            if(lFile){
-                lFile = false;
-            }
-        }
-
-    }
     /*
     Fetch a set of "books" from from the web service API
      */
@@ -260,7 +243,11 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                     .commit();
         }
     }
-
+    @Override
+    protected void onDestroy(){
+        super.onDestroy();
+        unbindService(myConnection);
+    }
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
@@ -270,13 +257,26 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
         outState.putParcelable(SELECTED_BOOK_KEY, selectedBook);
     }
 
-    @Override
-    public void bookPlay(int id) {
+    public void play_pressed(Book book) {
+        if(!connected){
 
+        }else{
+            int booksID = book.getId();
+            audioService.play(booksID);//play THIS book's ID
+            startService(intent);
+        }
     }
 
-    @Override
-    public void setDetailFrag(View.OnClickListener bookDetailsFrag) {
+    public void stop_pressed(){
+        if(!connected){
 
+        }else{
+            audioService.stop();
+            stopService(intent);
+        }
     }
+    public void pause_pressed() {
+        audioService.pause();
+    }
+
 }
