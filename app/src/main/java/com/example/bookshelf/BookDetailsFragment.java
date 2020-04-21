@@ -23,11 +23,12 @@ import java.util.Objects;
 public class BookDetailsFragment extends Fragment {
 
     private static final String BOOK_KEY = "book";
+    private final String DOWNLOAD_URL = "https://kamorris.com/lab/audlib/download.php?id=";
     private Book book;
-    ConstraintLayout bookDetailsLayout;//added layout for the fragment
+    //ConstraintLayout bookDetailsLayout;//added layout for the fragment
     TextView titleTextView, authorTextView;
     ImageView coverImageView;
-    PlayInterface parentActivity;
+    private BookInterface parentActivity;
     public BookDetailsFragment() {}
 
     public static BookDetailsFragment newInstance(Book book) {
@@ -60,14 +61,10 @@ public class BookDetailsFragment extends Fragment {
         titleTextView = v.findViewById(R.id.titleTextView);
         authorTextView = v.findViewById(R.id.authorTextView);
         coverImageView = v.findViewById(R.id.coverImageView);
-        v.findViewById(R.id.Play).setOnClickListener(new View.OnClickListener() {
+        v.findViewById(R.id.playButton).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if(book==null){
-                    return;
-                }
-                parentActivity.setDetailFrag(this);
-                parentActivity.bookPlay(book.getId());
+                parentActivity.play_pressed(book);
             }
         });
         /*
@@ -114,8 +111,7 @@ public class BookDetailsFragment extends Fragment {
         // No need to download separately.
         Picasso.get().load(book.getCoverUrl()).into(coverImageView);
     }
-    interface PlayInterface{
-        void bookPlay(int id);
-        void setDetailFrag(View.OnClickListener bookDetailsFrag);
+    interface BookInterface{
+        void play_pressed(Book book);
     }
 }
