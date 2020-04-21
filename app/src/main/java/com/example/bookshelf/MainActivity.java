@@ -74,9 +74,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-
+        seekBar = findViewById(R.id.seekBar);
         searchEditText = findViewById(R.id.searchEditText);
-
+        intent = new Intent(MainActivity.this, AudiobookService.class);//Starting intent to run the audiobookserivce class
         /*
         Perform a search
          */
@@ -86,7 +86,40 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                 fetchBooks(searchEditText.getText().toString());
             }
         });
+        /*
+        Perform a stop
+         */
+        findViewById(R.id.stopButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                stop_pressed();
+            }
+        });
+        /*
+        Perform a pause
+         */
+        findViewById(R.id.pauseButton).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                pause_pressed();
+            }
+        });
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                audioService.seekTo(progress);//this changes seekbar progress
+            }
 
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
         /*
         If we previously saved a book search and/or selected a book, then use that
         information to set up the necessary instance variables
@@ -141,51 +174,6 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
                         .commit();
             }
         }
-    }
-    private void setEventOfControls(){
-        findViewById(R.id.searchButton).setOnClickListener(v -> fetchBooks(((EditText) findViewById(R.id.searchBox)).getText().toString()));
-        findViewById(R.id.button3).setOnClickListener();
-
-        findViewById(R.id.stop).setOnClickListener(v -> {
-            BookPlay_stop();
-        });
-
-        seekBar = (SeekBar)findViewById(R.id.seekBar);
-        seekBar.setOnSeekBarChangeListener(new SeekBar
-                .OnSeekBarChangeListener() {
-            int pval = 0;
-
-            // When the progress value has changed
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser)
-            {
-                pval = progress;
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar)
-            {
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar)
-            {
-                binderService.seekTo(pval);
-                int duration = seekBar.getMax();
-                String tips = String.format("Progress: %.2f%%",((float) pval / (float)duration) * 100);
-                Toast.makeText(getApplicationContext(), tips,Toast.LENGTH_SHORT).show();
-            }
-        });
-
-        findViewById(R.id.button3).setOnLongClickListener(v -> {
-            Toast.makeText(v.getContext(), "Pause", Toast.LENGTH_SHORT).show();
-            return true;
-        });
-        findViewById(R.id.stop).setOnLongClickListener(v -> {
-            Toast.makeText(v.getContext(), "Stop", Toast.LENGTH_SHORT).show();
-            return true;
-
-        });
     }
 
     private void BookPlay_pause() {
