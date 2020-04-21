@@ -54,47 +54,20 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
     ArrayList<Book> books;
     RequestQueue requestQueue;
     Book selectedBook;
-    ServiceConnection sc = new ServiceConnection() {
-        @Override
-        public void onServiceConnected(ComponentName name, IBinder service) {
-
-        }
-
-        @Override
-        public void onServiceDisconnected(ComponentName name) {
-
-        }
-    }
     EditText searchEditText;
 
     private final String SEARCH_API = "https://kamorris.com/lab/abp/booksearch.php?search=";
-    Handler seekbarHandler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if(msg == null)
-                return;
-            if(msg.obj == null) {
-                return;
-            }
-            int pos = ((AudiobookService.BookProgress)msg.obj).getProgress();
-            if(seekBar != null)
-                seekBar.setProgress(pos);
-        }
-    };
 
     ServiceConnection myConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
             connected = true;
-            binderService = (AudiobookService.MediaControlBinder) service;
-            binderService.setProgressHandler(seekbarHandler);
-
+            audioService = (AudiobookService.MediaControlBinder) service;
         }
-
         @Override
         public void onServiceDisconnected(ComponentName name) {
             connected = false;
-            binderService = null;
+            audioService = null;
         }
     };
     @Override
