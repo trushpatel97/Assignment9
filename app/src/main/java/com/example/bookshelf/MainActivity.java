@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 
 import android.content.ComponentName;
+import android.content.Context;
 import android.content.Intent;
 import android.content.ServiceConnection;
 import android.os.Bundle;
@@ -69,13 +70,15 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             connected = false;
         }
     };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         searchEditText = findViewById(R.id.searchEditText);
         intent = new Intent(MainActivity.this, AudiobookService.class);//Starting intent to run the audiobookserivce class
-        SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
+        bindService(intent,myConnection, Context.BIND_AUTO_CREATE);
+        final SeekBar seekBar = (SeekBar) findViewById(R.id.seekBar);
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
@@ -163,6 +166,7 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
             @Override
             public void onClick(View v) {
                 stop_pressed();
+                seekBar.setProgress(0);
             }
         });
         /*
@@ -269,9 +273,9 @@ public class MainActivity extends AppCompatActivity implements BookListFragment.
 
     public void stop_pressed(){
         if(connected){
-
             audioService.stop();
             stopService(intent);
+
         }
     }
     public void pause_pressed() {
